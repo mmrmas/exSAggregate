@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 # magicindex
-.magicindex.jason
+.magicindex.json
