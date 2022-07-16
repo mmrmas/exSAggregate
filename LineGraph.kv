@@ -18,7 +18,7 @@ WindowManager:
         on_text_validate: root.on_text_validate(self)
     RelativeLayout:
       Label:
-        text: "downloading: " + root.text_input_str
+        text: root.progress_text
         font_size: root.font_size
     RelativeLayout:
       Button:
@@ -42,8 +42,8 @@ WindowManager:
   RelativeLayout:
     size : self.parent.size
     Button:
-      font_size : dp(30)
-      text : "OK"
+      font_size : root.font_size
+      text : "back"
       pos_hint : { "top":1, "right": 1 }
       size_hint: 0.2, 0.15
       on_release:
