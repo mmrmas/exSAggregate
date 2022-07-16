@@ -19,6 +19,9 @@ from kivy.uix.widget import Widget
 from kivy.properties import ListProperty
 from kivy.properties import StringProperty
 from decimal import Decimal
+from kivy.uix.progressbar import ProgressBar
+import os
+import sys
 
 class LineGraphWindow(Screen):
     this_width = NumericProperty(0)
@@ -213,15 +216,23 @@ class LineGraphWindow(Screen):
 
 # button on top of the graph
 class GraphButton(Widget):
+    font_size = NumericProperty(12)
     #pressed = ListProperty([0, 0])
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
             return super(GraphButton, self).on_touch_down(touch)
 
+    def on_size(self,*args):
+        self.this_width = self.width
+        self.this_height = self.height
+        self.font_size =  int(min(self.height * 0.05, self.width * 0.05))
+
 # Upload window
 class UploadWindow(Screen):
     font_size = NumericProperty(12)
+    progress_value = NumericProperty(0)
     text_input_str = StringProperty("foo")
+    progress_text = StringProperty ("")
     #https://www.dropbox.com/s/h9o01p36fqh4wf8/csv.csv?dl=1
 
     def __init__(self, **kwargs):
@@ -229,7 +240,18 @@ class UploadWindow(Screen):
 
     def on_text_validate(self,widget):
         self.text_input_str = widget.text
-        df_csv = pd.read_csv(self.text_input_str)
+        self.download_file()
+
+    def download_file(self):
+        chunksize =1
+        chunk_list = []
+
+        for chunk in pd.read_csv(self.text_input_str, chunksize=chunksize):
+            chunk_list.append(chunk)
+            self.progress_value += chunksize
+            self.progress_text =  "Downloaded " + str(self.progress_value) + " columns"
+        df_csv = pd.concat((f for f in chunk_list), axis=0)
+
         df_csv = df_csv.set_index(df_csv.columns[0])
         LineGraphWindow.df_data = df_csv
         LineGraphWindow()
@@ -238,6 +260,8 @@ class UploadWindow(Screen):
         self.this_width = self.width
         self.this_height = self.height
         self.font_size =  int(min(self.height * 0.05, self.width * 0.05))
+
+
 
 # initiate app
 class WindowManager(ScreenManager):
