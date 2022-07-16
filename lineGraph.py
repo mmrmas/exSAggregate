@@ -231,7 +231,7 @@ class GraphButton(Widget):
 class UploadWindow(Screen):
     font_size = NumericProperty(12)
     progress_value = NumericProperty(0)
-    text_input_str = StringProperty("foo")
+    text_input_str = StringProperty("==>paste file cloud location here (for dropbox, use dl=1) <==")
     progress_text = StringProperty ("")
     #https://www.dropbox.com/s/h9o01p36fqh4wf8/csv.csv?dl=1
 
