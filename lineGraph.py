@@ -27,6 +27,7 @@ class LineGraphWindow(Screen):
     this_width = NumericProperty(0)
     this_height = NumericProperty(0)
     font_size = NumericProperty(12)
+    y_title = StringProperty('')
 
     COLUMN = 0
 
@@ -83,7 +84,7 @@ class LineGraphWindow(Screen):
 
     def init_data(self):
         #self.x_title = self.data[0][0]
-        #self.y_title = self.data[0][self.COLUMN]
+        self.y_title = self.df_data.columns[self.COLUMN]
         self.x_labs  = list(self.df_data.index)
         self.y_labs  = list(self.df_data.columns)
         self.y_vals  = list(self.df_data[self.df_data.columns[self.COLUMN]])
@@ -121,12 +122,12 @@ class LineGraphWindow(Screen):
                 self.number_of_steps = len(self.plotted_y_labels)
 
     def update_XY_axes(self):
-        self.x1 = int(self.this_width * 0.1)
-        self.x2 = int(self.this_width * 0.9)
+        self.x1 = int(self.this_width * 0.13)
+        self.x2 = int(self.this_width * 0.88)
         self.y1 = int(self.this_height * 0.1)
         self.y2 = int(self.this_height * 0.9)
         self.x_axis.points = [self.x1, self.y1, self.x2, self.y1]
-        self.y_axis.points = [self.x1, self.y1, self.x1, self.y2]
+        self.y_axis.points = [self. x1, self.y1, self.x1, self.y2]
 
 
     def update_plot(self):
@@ -159,12 +160,13 @@ class LineGraphWindow(Screen):
             [texture, texture_size] = self.create_label(Decimal(str(self.step_size)) * (i+1))
             self.plotted_y_labels[i].texture = texture
             self.plotted_y_labels[i].size = texture_size
-            self.plotted_y_labels[i].pos = (int(self.x1 - texture_size[0] - 0.03 * self.this_width), int(y + self.step_in_px - texture_size[1]/2))
+            self.plotted_y_labels[i].pos = (int(self.x1 - texture_size[0] - 0.01 * self.this_width), int(y + self.step_in_px - texture_size[1]/2))
             #also put the lines here
             self.plotted_y_lines[i].points = [int(self.x1), int(y+self.step_in_px), int(self.x2), int(y+self.step_in_px)]
             self.plotted_y_lines[i].dash_length = 1
             self.plotted_y_lines[i].dash_offset = 3
             i += 1
+
 
     def create_label(self, lab):
         mylabel = CoreLabel(text=str(lab), font_size = self.font_size, color=(1, 1, 1, 1))
@@ -231,7 +233,9 @@ class GraphButton(Widget):
 class UploadWindow(Screen):
     font_size = NumericProperty(12)
     progress_value = NumericProperty(0)
-    text_input_str = StringProperty("==>paste file cloud location here (for dropbox, use dl=1) <==")
+    text_input_str = StringProperty(
+"""file cloud location here
+(for dropbox, add dl=1)""")
     progress_text = StringProperty ("")
     #https://www.dropbox.com/s/h9o01p36fqh4wf8/csv.csv?dl=1
 
@@ -260,8 +264,6 @@ class UploadWindow(Screen):
         self.this_width = self.width
         self.this_height = self.height
         self.font_size =  int(min(self.height * 0.05, self.width * 0.05))
-
-
 
 # initiate app
 class WindowManager(ScreenManager):
